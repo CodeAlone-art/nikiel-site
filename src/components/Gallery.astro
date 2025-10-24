@@ -1,0 +1,94 @@
+---
+/** Czysty viewer galerii (bez menu i bez headera).
+ *  Props: title: string; images: string[]; backUrl?: string
+ */
+const { title, images, backUrl = "/galeria" } = Astro.props;
+---
+
+<main>
+  <div class="topbar">
+    <h1 class="ttl">{title}</h1>
+    <a href={backUrl} class="back" aria-label="Wróć do galerii">← Wróć</a>
+  </div>
+
+  <section class="grid" aria-label={`Galeria — ${title}`}>
+    {images.map((src, idx) => (
+      <figure class="tile" tabindex="0" aria-label={`Podgląd zdjęcia ${idx + 1}`}>
+        <img src={src} alt={`${title} — ${idx + 1}`} loading="lazy" decoding="async" data-idx={idx} />
+      </figure>
+    ))}
+  </section>
+
+  <dialog id="viewer" class="viewer" aria-label="Podgląd zdjęcia">
+    <button class="btn close" id="vClose" aria-label="Zamknij">✕</button>
+    <button class="btn prev"  id="vPrev"  aria-label="Poprzednie">←</button>
+    <img id="vImg" alt="Zdjęcie" />
+    <button class="btn next"  id="vNext"  aria-label="Następne">→</button>
+  </dialog>
+</main>
+
+<style>
+  :root { --bg:#0e0e0e; --fg:#f2f2f2; --muted:#b6b6b6; --card:#151515; --gap:clamp(10px,2vw,18px); --r:18px; }
+  *{box-sizing:border-box}
+  body{background:var(--bg); color:var(--fg)}
+  main{padding:18px clamp(16px,4vw,48px) 48px}
+
+  .topbar{display:flex; gap:12px; align-items:center; justify-content:space-between; margin:8px 0 12px}
+  .ttl{margin:0; font-size:1.05rem; color:var(--muted); font-weight:600}
+  .back{color:var(--fg); text-decoration:none; opacity:.85; border:1px solid #2a2a2a; padding:6px 10px; border-radius:10px}
+  .back:hover{opacity:1}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:var(--gap)}
+  .tile{border-radius:var(--r);overflow:hidden;background:var(--card);border:1px solid #1f1f1f;cursor:zoom-in;outline:none}
+  .tile:focus-visible{box-shadow:0 0 0 2px #fff3; border-color:#2a2a2a}
+  .tile img{width:100%;height:100%;display:block;object-fit:cover;aspect-ratio:3/4}
+
+  .viewer{border:none;padding:0;background:#0000;width:100vw;max-width:100vw}
+  .viewer::backdrop{background:rgba(0,0,0,.9)}
+  .viewer[open]{display:grid;place-items:center}
+  #vImg{max-width:min(92vw,1400px);max-height:90vh;object-fit:contain}
+  .btn{position:fixed;top:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;padding:10px 14px;border-radius:999px;cursor:pointer}
+  .close{right:16px}
+  .prev{left:16px;top:50%;transform:translateY(-50%)}
+  .next{right:16px;top:50%;transform:translateY(-50%)}
+</style>
+
+<script is:inline>
+  const tiles  = Array.from(document.querySelectorAll('.tile'));
+  const imgs   = Array.from(document.querySelectorAll('.tile img'));
+  const viewer = document.getElementById('viewer');
+  const vImg   = document.getElementById('vImg');
+  const vClose = document.getElementById('vClose');
+  const vPrev  = document.getElementById('vPrev');
+  const vNext  = document.getElementById('vNext');
+
+  let i = 0;
+  function openAt(idx){ i = idx; vImg.src = imgs[i].src; if(!viewer.open) viewer.showModal(); }
+  function step(dir){ i = (i + dir + imgs.length) % imgs.length; vImg.src = imgs[i].src; }
+
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('.tile img'); if (!t) return;
+    openAt(Number(t.dataset.idx));
+  });
+
+  tiles.forEach(tile => {
+    tile.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        const img = tile.querySelector('img');
+        openAt(Number(img.dataset.idx));
+        e.preventDefault();
+      }
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (!viewer.open) return;
+    if (e.key === 'Escape') viewer.close();
+    if (e.key === 'ArrowLeft') step(-1);
+    if (e.key === 'ArrowRight') step(1);
+  });
+  vPrev.addEventListener('click', () => step(-1));
+  vNext.addEventListener('click', () => step(1));
+  vClose.addEventListener('click', () => viewer.close());
+  viewer.addEventListener('click', (e) => { if (e.target === viewer) viewer.close(); });
+</script>

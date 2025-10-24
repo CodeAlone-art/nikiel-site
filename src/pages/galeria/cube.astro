@@ -1,0 +1,52 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Gallery from "../../components/Gallery.astro";
+import meta from "@/data/galeria/cube.json";
+
+// 📁 Czytamy zawartość folderu public/images/cube po stronie serwera
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const title = "Linia Cube";
+
+// Absolutna ścieżka do katalogu z obrazami względem TEGO pliku:
+const dirUrl = new URL("../../../public/images/cube/", import.meta.url);
+const dir = fileURLToPath(dirUrl);
+
+// Dozwolone rozszerzenia (uwzględniamy wielkość liter)
+const exts = new Set([
+  ".jpg",".jpeg",".png",".webp",".avif",
+  ".JPG",".JPEG",".PNG",".WEBP",".AVIF"
+]);
+
+let images: string[] = [];
+try {
+  // wczytujemy wszystkie pliki graficzne, sortujemy „po ludzku”, budujemy URL-e do /images/cube/...
+  images = fs
+    .readdirSync(dir)
+    .filter((f) => exts.has(path.extname(f)))
+    .sort((a, b) => a.localeCompare(b, "pl", { numeric: true, sensitivity: "base" }))
+    .map((name) => `/images/cube/${name}`);
+} catch (e) {
+  images = [];
+}
+
+// fallback: jeśli nic nie znaleziono, pokaż info (łatwiej namierzyć problem)
+const empty = images.length === 0;
+---
+<BaseLayout title={`NIKIEL — ${title}`}>
+  <Navbar />
+  <div style="height:64px" aria-hidden="true"></div>
+
+  { empty ? (
+    <main style="padding:18px clamp(16px,4vw,48px) 48px; color:#f2f2f2">
+      <h1 style="margin:0 0 12px; color:#b6b6b6; font-weight:600; font-size:1.05rem">{title}</h1>
+      <p>Nie znaleziono obrazów w <code>/public/images/cube</code>. Sprawdź, czy katalog istnieje i zawiera pliki JPG/PNG/WEBP/AVIF.</p>
+      <p>Przykładowy adres testowy: <code>/images/cube/<em>nazwa_pliku</em>.JPG</code></p>
+    </main>
+  ) : (
+    <Gallery title={title} images={images} backUrl="/galeria" />
+  )}
+</BaseLayout>

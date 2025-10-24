@@ -1,0 +1,91 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Navbar from "../components/Navbar.astro";
+---
+
+<BaseLayout title="Portfolio – NIKIEL">
+  <Navbar />
+  <div class="nav-spacer" aria-hidden="true"></div>
+
+  <main class="portfolio-wrapper">
+    <!-- 🔹 Klikalny tekst prowadzący do Galerii -->
+    <a id="quote" class="quote" href="/galeria"></a>
+  </main>
+
+  <script is:inline>
+    // 🔹 Pula zdań (bez nr 7)
+    const quotes = [
+      "Nowa kolekcja dojrzewa — jeszcze chwila cierpliwości.",
+      "Wkrótce pokażemy, co kryje się za tkaniną.",
+      "Przestrzeń w trakcie tworzenia — bądź czujny.",
+      "Każdy projekt potrzebuje ciszy, zanim zabrzmi.",
+      "To miejsce wypełni się sztuką — już niebawem.",
+      "Zanim światło padnie na materiał, trwa praca w cieniu.",
+      "Tworzymy dalej — zobacz, od czego zaczynaliśmy."
+    ];
+
+    const random = Math.floor(Math.random() * quotes.length);
+    const el = document.getElementById("quote");
+    if (el) {
+      el.textContent = quotes[random];
+      el.classList.add("visible");
+    }
+  </script>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #0e0e0e;
+      color: #f5f5f5;
+      font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .nav-spacer { height: 64px; }
+
+    .portfolio-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100vh - 64px);
+      text-align: center;
+      padding: 0 2rem;
+    }
+
+    /* 🔹 Styl minimalistyczny, ale klikalny */
+    .quote {
+      font-size: clamp(1.1rem, 2vw, 1.6rem);
+      font-weight: 400;
+      color: #eaeaea;
+      text-decoration: none;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.8s ease, transform 0.8s ease, color 0.3s ease;
+      max-width: 700px;
+      line-height: 1.6;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+    }
+
+    .quote.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 🔹 Subtelny efekt po najechaniu */
+    .quote:hover {
+      color: #ffffff;
+      text-shadow: 0 0 6px #ffffff22;
+    }
+
+    @media (max-width: 900px) {
+      .portfolio-wrapper {
+        padding: 0 1.5rem;
+      }
+      .quote {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</BaseLayout>

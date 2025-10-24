@@ -1,0 +1,27 @@
+/* === Reset i bezpieczne podstawy (bez zmiany wyglądu stron) === */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+img, svg, video, canvas { display: block; max-width: 100%; height: auto; }
+button, input, textarea, select { font: inherit; }
+a { color: inherit; text-decoration: none; }
+a:focus-visible, button:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+
+/* Wygładzanie fontów i baza typografii (bez kolorów i tła, żeby nic nie „przemalować”) */
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+
+/* Zmienne kolorów — na przyszłość (niewymuszone, nie używamy ich jeszcze nigdzie) */
+:root {
+  --bg: #000;
+  --fg: #fff;
+  --muted: rgba(255,255,255,0.7);
+  --border: rgba(255,255,255,0.12);
+}
+
+/* Utility (opcjonalne, użyjesz kiedy zechcesz) */
+.visually-hidden {
+  position: absolute !important; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+.container { width: 100%; max-width: 1200px; margin-inline: auto; padding-inline: 16px; }

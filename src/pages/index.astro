@@ -1,0 +1,46 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="NIKIEL — Strona główna" description="Oficjalna strona marki NIKIEL">
+  <style>
+    /* body w layoucie + odstęp pod stały navbar (64px) */
+    :global(body) {
+      background: linear-gradient(to bottom, #2a2a2a, #d0d0d0);
+      margin: 0;
+      font-family: sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      overflow: hidden;
+      padding-top: 72px; /* zapobiega nachodzeniu treści pod navbar */
+    }
+
+    .logo {
+      width: 380px;
+      max-width: 70vw;
+      height: auto;
+      animation: breathe 3.5s ease-in-out infinite;
+      transition: filter 0.3s ease;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .logo:hover {
+      filter: brightness(1.1);
+    }
+
+    @keyframes breathe {
+      0%   { transform: scale(0.94); filter: drop-shadow(0 0 0px rgba(0,0,0,0.25)); }
+      50%  { transform: scale(1.06); filter: drop-shadow(0 8px 24px rgba(0,0,0,0.35)); }
+      100% { transform: scale(0.94); filter: drop-shadow(0 0 0px rgba(0,0,0,0.25)); }
+    }
+  </style>
+
+  <a href="/portfolio" aria-label="Przejdź do portfolio">
+    <img src="/images/NIKIEL_LOGO.jpg" alt="NIKIEL Logo" class="logo" />
+  </a>
+</BaseLayout>

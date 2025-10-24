@@ -1,0 +1,49 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Gallery from "../../components/Gallery.astro";
+
+// 📁 Czytamy obrazy z /public/images/totalcolor po stronie serwera
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const title = "Linia totalcolor";
+
+// Absolutna ścieżka do katalogu z obrazami względem TEGO pliku:
+const dirUrl = new URL("../../../public/images/totalcolor/", import.meta.url);
+const dir = fileURLToPath(dirUrl);
+
+// Dozwolone rozszerzenia (z wielkością liter)
+const exts = new Set([
+  ".jpg",".jpeg",".png",".webp",".avif",
+  ".JPG",".JPEG",".PNG",".WEBP",".AVIF"
+]);
+
+let images: string[] = [];
+try {
+  images = fs
+    .readdirSync(dir)
+    .filter((f) => exts.has(path.extname(f)))
+    .sort((a, b) => a.localeCompare(b, "pl", { numeric: true, sensitivity: "base" }))
+    .map((name) => `/images/totalcolor/${name}`);
+} catch (e) {
+  images = [];
+}
+
+const empty = images.length === 0;
+---
+<BaseLayout title={`NIKIEL — ${title}`}>
+  <!-- Pasek menu jak na innych podstronach -->
+  <Navbar />
+  <div style="height:64px" aria-hidden="true"></div>
+
+  { empty ? (
+    <main style="padding:18px clamp(16px,4vw,48px) 48px; color:#f2f2f2">
+      <h1 style="margin:0 0 12px; color:#b6b6b6; font-weight:600; font-size:1.05rem">{title}</h1>
+      <p>Nie znaleziono obrazów w <code>/public/images/totalcolor</code>. Upewnij się, że pliki tam są (JPG/PNG/WEBP/AVIF).</p>
+    </main>
+  ) : (
+    <Gallery title={title} images={images} backUrl="/galeria" />
+  )}
+</BaseLayout>
