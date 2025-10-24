@@ -2,4 +2,6 @@
 import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+  output: 'static', // 👈 to mówi Astro, żeby budował stronę jako statyczną
+});
