@@ -1,9 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import cloudflare from '@astrojs/cloudflare';
 
-// https://astro.build/config
+// Statyczny build – galerie działają, Cloudflare obsługuje funkcje z /functions/
 export default defineConfig({
-  output: 'server',
-  adapter: cloudflare(),
+  output: 'static',
 });
