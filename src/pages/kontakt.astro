@@ -13,34 +13,32 @@ import Navbar from "../components/Navbar.astro";
     <div class="right">
       <form id="contact-form" action="/api/contact" method="POST" class="form-editorial">
         <header class="form-head">
-          <span class="tagline">Studio NIKIEL</span>
           <h2 class="title">
             SKONTAKTUJ SIĘ Z NI<span class="k-flip">K</span>IEL
           </h2>
-          <p class="sub">Jedno zdanie wystarczy. Możesz wpaść z linkiem do pracy, ideą, pytaniem.</p>
         </header>
 
         <div class="field">
           <label for="name">IMIĘ I NAZWISKO</label>
-          <input id="name" name="name" type="text" placeholder="Twoje imię" required />
+          <input id="name" name="name" type="text" placeholder="" required />
           <div class="underline"></div>
         </div>
 
         <div class="field">
           <label for="email">E-MAIL</label>
-          <input id="email" name="email" type="email" placeholder="adres@twojemail.com" required />
+          <input id="email" name="email" type="email" placeholder="" required />
           <div class="underline"></div>
         </div>
 
         <div class="field">
           <label for="subject">TEMAT</label>
-          <input id="subject" name="subject" type="text" placeholder="Temat wiadomości (opcjonalnie)" />
+          <input id="subject" name="subject" type="text" placeholder="" />
           <div class="underline"></div>
         </div>
 
         <div class="field">
           <label for="message">WIADOMOŚĆ</label>
-          <textarea id="message" name="message" placeholder="Napisz krótko. Linki mile widziane." required></textarea>
+          <textarea id="message" name="message" placeholder="" required></textarea>
           <div class="underline"></div>
         </div>
 
@@ -48,11 +46,10 @@ import Navbar from "../components/Navbar.astro";
 
         <div class="actions">
           <button type="submit" class="btn-ghost">Wyślij</button>
-          <span class="hint">Odpowiadamy zwykle w ciągu 24h.</span>
         </div>
 
-        <p id="form-ok" class="status ok" hidden>Dziękujemy! Wiadomość została wysłana.</p>
-        <p id="form-err" class="status err" hidden>Ups… Coś poszło nie tak. Spróbuj ponownie.</p>
+        <p id="form-ok" class="status ok" hidden>Wiadomość została wysłana.</p>
+        <p id="form-err" class="status err" hidden>Coś poszło nie tak. Spróbuj ponownie.</p>
       </form>
     </div>
   </div>
@@ -76,28 +73,27 @@ import Navbar from "../components/Navbar.astro";
         }
 
         try {
-          // 🔹 Dla lokalnych testów (VSC) — bez błędów gdy backend nieaktywny
-          const res = await fetch(form.action, { method: 'POST', body: fd }).catch(() => null);
+          const res = await fetch(form.action, { method: 'POST', body: fd })
+            .catch(() => null);
+
           if (!res) {
-            console.log("Tryb lokalny: backend /api/contact nieaktywny.");
             ok.hidden = false;
             return;
           }
 
           const data = await res.json().catch(() => ({}));
           if (data.ok) {
-            if (err) err.hidden = true;
-            if (ok) ok.hidden = false;
+            ok.hidden = false;
+            err.hidden = true;
             form.reset();
             if (window.turnstile) window.turnstile.reset();
           } else {
-            if (ok) ok.hidden = true;
-            if (err) err.hidden = false;
-            console.error('Contact error:', data.error || res.statusText);
+            ok.hidden = true;
+            err.hidden = false;
           }
         } catch {
-          if (ok) ok.hidden = true;
-          if (err) err.hidden = false;
+          ok.hidden = true;
+          err.hidden = false;
         }
       });
     }
@@ -172,33 +168,21 @@ import Navbar from "../components/Navbar.astro";
       backdrop-filter: blur(8px);
     }
 
-    .form-head { margin-bottom: .2rem; }
-    .form-head .tagline{
-      letter-spacing:.18em;
-      font-size:.7rem;
-      color: var(--muted);
-      text-transform: uppercase;
-    }
-    .form-head .title{
+    .title {
       margin: .2rem 0 .35rem;
       font-size: clamp(1.6rem, 2.6vw, 2.2rem);
       line-height: 1.1;
       font-weight: 700;
       letter-spacing: .02em;
-      font-kerning: normal;
       white-space: nowrap;
     }
+
     .k-flip{
       display:inline-block;
       transform: scaleX(-1);
       transform-origin: 50% 50%;
       margin-left: -0.06em;
       margin-right: -0.02em;
-    }
-    .form-head .sub{
-      margin: 0;
-      font-size: .95rem;
-      color: var(--muted);
     }
 
     .field{ position: relative; display:flex; flex-direction:column; gap:.35rem; }
@@ -220,7 +204,11 @@ import Navbar from "../components/Navbar.astro";
       font-size: 1.02rem;
     }
 
-    .field textarea{ resize: vertical; min-height: 120px; max-height: 320px; }
+    .field textarea{
+      resize: vertical;
+      min-height: 120px;
+      max-height: 320px;
+    }
 
     .field .underline{
       height: 1px;
@@ -235,12 +223,6 @@ import Navbar from "../components/Navbar.astro";
       box-shadow: 0 0 0 1px rgba(255,204,0,.15);
     }
 
-    ::placeholder{ color: #7d7d7d; opacity:.85; }
-
-    .actions{
-      display:flex; align-items:center; gap:1rem; margin-top:.4rem;
-    }
-
     .btn-ghost{
       appearance: none;
       border: 1px solid rgba(255,255,255,.35);
@@ -251,26 +233,20 @@ import Navbar from "../components/Navbar.astro";
       font-weight: 700;
       letter-spacing: .04em;
       cursor: pointer;
-      transition: border-color .25s ease, transform .08s ease, background .25s ease, color .25s ease;
+      transition: border-color .25s ease, background .25s ease, color .25s ease;
     }
+
     .btn-ghost:hover{
       border-color: var(--accent);
       background: rgba(255,204,0,.08);
     }
-    .btn-ghost:active{ transform: translateY(1px) scale(.99); }
-
-    .hint{
-      color: var(--muted);
-      font-size: .9rem;
-    }
 
     .status{
-      margin:.25rem 0 0;
+      margin-top:.25rem;
       font-size:.95rem;
       padding:.6rem .8rem;
       border-radius: 10px;
       background: rgba(255,255,255,.06);
-      display:inline-block;
     }
     .status.ok{ border:1px solid rgba(120,200,120,.35); color:#cfeaca; }
     .status.err{ border:1px solid rgba(255,120,120,.35); color:#ffd1d1; }
@@ -284,7 +260,7 @@ import Navbar from "../components/Navbar.astro";
       }
       .left { height: 300px; }
       .right { padding: 2rem 1.2rem; }
-      .form-editorial{ padding: 1.6rem 1.4rem; }
+      .form-editorial { padding: 1.6rem 1.4rem; }
     }
   </style>
 </BaseLayout>
