@@ -1,0 +1,189 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Navbar from "../components/Navbar.astro";
+
+const collections = [
+  {
+    slug: "cube",
+    name: "Cube",
+    description:
+      "Czarna bluza z kapturem w formie płaszcza, z geometrycznym pikowaniem i surowym wykończeniem — fason unisex.",
+    cover: "/images/cube/Cubecover.JPG",
+  },
+  {
+    slug: "totalcolor",
+    name: "Totalcolor",
+    description:
+      "Kolekcja, w której kolor staje się głównym tworzywem — intensywne barwy, kontrasty i wyraziste sylwetki.",
+    cover: "/images/totalcolor/Totalcolorcover.JPG",
+  },
+  {
+    slug: "komfort",
+    name: "Komfort",
+    description:
+      "Miękkie konstrukcje i swoboda ruchu — ubrania projektowane z myślą o codziennym funkcjonowaniu.",
+    cover: "/images/komfort/Komfortcover.JPG",
+  },
+  {
+    slug: "bomber",
+    name: "Bomber",
+    description:
+      "Mocniejsza linia ramion, streetwearowe proporcje i dopracowane detale inspirowane kurtką bomber.",
+    cover: "/images/bomber/Bombercover.JPG",
+  },
+  {
+    slug: "camouflage",
+    name: "Camouflage",
+    description:
+      "Warstwy, wzory i faktury, które grają z widocznością sylwetki, nie zawsze w sposób oczywisty.",
+    cover: "/images/camouflage/Camouflagecover.JPG",
+  },
+];
+---
+
+<BaseLayout title="Kolekcje – NIKIEL">
+  <div class="full-bg">
+    <Navbar />
+    <div class="nav-spacer" aria-hidden="true"></div>
+
+    <main class="collections-wrapper">
+      <header class="collections-header">
+        <h1>Kolekcje</h1>
+        <p>
+          Przegląd autorskich kolekcji marki NIKIEL. Każda z nich to inny sposób
+          budowania formy, koloru i sylwetki. Wybierz kolekcję, aby zobaczyć więcej.
+        </p>
+      </header>
+
+      <section class="collections-grid">
+        {collections.map((c) => (
+          <a href={`/kolekcje/${c.slug}`} class="collection-card">
+            <div class="image-wrap">
+              <img src={c.cover} alt={c.name} loading="lazy" />
+            </div>
+            <div class="text-wrap">
+              <h2>{c.name}</h2>
+              <p>{c.description}</p>
+              <span class="more">Zobacz kolekcję →</span>
+            </div>
+          </a>
+        ))}
+      </section>
+    </main>
+  </div>
+
+  <style>
+    .full-bg {
+      min-height: 100vh;
+      background: linear-gradient(to bottom, #2a2a2a, #d0d0d0);
+    }
+
+    :global(body) {
+      background: transparent !important;
+    }
+
+    .nav-spacer {
+      height: 64px;
+    }
+
+    .collections-wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 3.5rem;
+      color: #f5f5f5;
+    }
+
+    .collections-header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .collections-header p {
+      max-width: 640px;
+      line-height: 1.7;
+      font-size: 1.05rem;
+      opacity: 0.9;
+    }
+
+    .collections-grid {
+      margin-top: 2.5rem;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.8rem;
+    }
+
+    .collection-card {
+      display: flex;
+      flex-direction: column;
+      background: #111111;
+      border-radius: 16px;
+      border: 1px solid #2a2a2a;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+    }
+
+    .collection-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.45);
+      border-color: #3b3b3b;
+    }
+
+    .image-wrap {
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background: #1a1a1a;
+    }
+
+    .image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .collection-card:hover .image-wrap img {
+      transform: scale(1.03);
+    }
+
+    .text-wrap {
+      padding: 1.2rem 1.35rem 1.25rem;
+    }
+
+    .text-wrap h2 {
+      font-size: 1.3rem;
+      margin: 0 0 0.4rem;
+    }
+
+    .text-wrap p {
+      font-size: 0.98rem;
+      line-height: 1.6;
+      margin: 0 0 0.75rem;
+      opacity: 0.9;
+    }
+
+    .more {
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      opacity: 0.85;
+    }
+
+    @media (max-width: 900px) {
+      .collections-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .collections-wrapper {
+        padding: 2.2rem 1.1rem 3rem;
+      }
+    }
+  </style>
+</BaseLayout>

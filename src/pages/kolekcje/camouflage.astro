@@ -1,0 +1,111 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Navbar from "../../components/Navbar.astro";
+import fs from "node:fs";
+
+const dirUrl = new URL("../../../public/images/camouflage/", import.meta.url);
+
+let images: string[] = [];
+try {
+  const files = fs.readdirSync(dirUrl);
+
+  images = files
+    .filter((file) => /\.(jpe?g|png|webp|avif)$/i.test(file))
+    .filter((file) => !file.toLowerCase().includes("cover"))
+    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+    .map((file) => `/images/camouflage/${file}`);
+} catch (err) {
+  console.error("Nie udało się odczytać katalogu Camouflage:", err);
+  images = [];
+}
+---
+
+<BaseLayout title="Camouflage – kolekcja NIKIEL">
+  <div class="full-bg">
+    <Navbar />
+    <div class="nav-spacer" aria-hidden="true"></div>
+
+    <main class="collection-page">
+      <header>
+        <h1>Camouflage</h1>
+        <p>
+Kolekcja oparta na przenikaniu się tła i sylwetki. 
+Wzory, warstwy i faktury pracują razem, nie zawsze w sposób oczywisty — czasem chowają formę, czasem ją wydobywają.
+Camouflage to balans między widocznością a ukryciem, bez dosłownego nawiązywania do klasycznego kamuflażu.
+        </p>
+      </header>
+
+      <section class="gallery">
+        {images.map((src, index) => (
+          <img src={src} alt={`Camouflage — look ${index + 1}`} loading="lazy" />
+        ))}
+      </section>
+    </main>
+  </div>
+
+  <style>
+    .full-bg {
+      min-height: 100vh;
+      background: linear-gradient(to bottom, #2a2a2a, #d0d0d0);
+    }
+
+    :global(body) {
+      background: transparent !important;
+    }
+
+    .nav-spacer {
+      height: 64px;
+    }
+
+    .collection-page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 3.5rem;
+      color: #f5f5f5;
+    }
+
+    .collection-page header h1 {
+      font-size: 2rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .collection-page header p {
+      max-width: 680px;
+      line-height: 1.7;
+      font-size: 1.05rem;
+      opacity: 0.92;
+      white-space: pre-line;
+    }
+
+    .gallery {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .gallery img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid #2b2b2b;
+      background: #151515;
+    }
+
+    @media (max-width: 900px) {
+      .gallery {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      .collection-page {
+        padding: 2.2rem 1.1rem 3rem;
+      }
+      .gallery {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</BaseLayout>
